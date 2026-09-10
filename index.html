@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLUBHOUSE</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0b0b0d;--card:#151518;--text:#f5f5f5;--muted:#999;--line:#29292d}
+html{scroll-behavior:smooth}
+body{font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+a{color:inherit;text-decoration:none}
+.nav{height:74px;display:flex;align-items:center;justify-content:space-between;padding:0 6%;border-bottom:1px solid #19191c;position:sticky;top:0;background:rgba(11,11,13,.78);backdrop-filter:blur(14px);z-index:20}
+.logo{font-weight:800;letter-spacing:-.5px}.logo span{color:#777}
+.nav a{font-size:13px;color:#aaa;transition:.25s}.nav a:hover{color:#fff}
+.hero{min-height:72vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:80px 20px;position:relative}
+.glow{position:absolute;width:280px;height:280px;border-radius:50%;background:#fff;filter:blur(130px);opacity:.055;animation:float 7s ease-in-out infinite}
+@keyframes float{50%{transform:translate(30px,-25px) scale(1.12)}}
+.hero-inner{position:relative;z-index:1}
+.eyebrow{font-size:11px;letter-spacing:4px;color:#777;margin-bottom:22px;animation:up .8s both}
+h1{font-size:clamp(48px,9vw,110px);letter-spacing:-5px;line-height:.9;animation:up .8s .1s both}
+.hero p{max-width:560px;margin:25px auto 0;color:#999;font-size:15px;line-height:1.7;animation:up .8s .2s both}
+.scroll{display:inline-block;margin-top:45px;font-size:11px;color:#777;letter-spacing:2px;animation:bob 2s infinite}
+@keyframes up{from{opacity:0;transform:translateY(25px)}to{opacity:1;transform:none}}
+@keyframes bob{50%{transform:translateY(6px);opacity:.55}}
+.section{padding:40px 6% 100px;max-width:1400px;margin:auto}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:30px}
+.section h2{font-size:30px;letter-spacing:-1px}.section-head p{color:#666;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;transition:transform .35s ease,border-color .35s ease;animation:cardIn .7s both}
+.card:nth-child(2){animation-delay:.08s}.card:nth-child(3){animation-delay:.16s}.card:nth-child(4){animation-delay:.24s}.card:nth-child(5){animation-delay:.32s}.card:nth-child(6){animation-delay:.4s}
+@keyframes cardIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.card:hover{transform:translateY(-7px);border-color:#444}
+.photo{height:380px;overflow:hidden;position:relative;background:#222}
+.photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .55s ease,filter .55s ease}
+.card:hover img{transform:scale(1.045);filter:brightness(.78)}
+.view{position:absolute;inset:auto 16px 16px auto;padding:9px 12px;border-radius:30px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);font-size:11px;opacity:0;transform:translateY(8px);transition:.3s}
+.card:hover .view{opacity:1;transform:none}
+.info{padding:17px 18px 20px}.num{font-size:10px;color:#666;letter-spacing:2px}.name{font-size:19px;font-weight:700;margin-top:5px}.nick{font-size:12px;color:#888;margin-top:4px}
+footer{text-align:center;padding:45px 20px;border-top:1px solid #19191c;color:#666;font-size:12px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(12px);z-index:50;display:none;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .3s}
+.modal.open{display:flex;opacity:1}
+.modal-box{width:min(900px,100%);max-height:90vh;overflow:auto;background:#111114;border:1px solid #29292d;border-radius:22px;display:grid;grid-template-columns:1fr 1fr;transform:scale(.96) translateY(15px);transition:.35s ease;position:relative}
+.modal.open .modal-box{transform:none}
+.modal-img{min-height:520px}.modal-img img{width:100%;height:100%;object-fit:cover;display:block}
+.details{padding:45px 35px;display:flex;flex-direction:column;justify-content:center}.tag{color:#777;font-size:10px;letter-spacing:3px;margin-bottom:15px}.details h3{font-size:40px;letter-spacing:-2px}.role{color:#aaa;margin:8px 0 28px;font-size:14px}.details p{color:#999;line-height:1.7;font-size:14px;margin-bottom:24px}.details h4{font-size:11px;color:#777;letter-spacing:2px;margin-bottom:10px}.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:24px}.chip{font-size:11px;padding:8px 11px;border:1px solid #303035;border-radius:20px;color:#bbb}
+.close{position:absolute;right:15px;top:15px;width:38px;height:38px;border-radius:50%;border:1px solid #444;background:rgba(0,0,0,.65);color:#fff;cursor:pointer;font-size:20px;z-index:3}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.photo{height:300px}.modal-box{grid-template-columns:1fr;max-height:92vh}.modal-img{height:340px;min-height:0}.details{padding:28px 24px}.details h3{font-size:32px}}
+@media(max-width:520px){.nav{padding:0 20px}.hero{min-height:65vh;padding:60px 20px}.hero h1{letter-spacing:-3px}.section{padding:25px 16px 70px}.grid{grid-template-columns:1fr;gap:14px}.photo{height:420px}.section-head{align-items:start;gap:10px}.section h2{font-size:25px}.section-head p{max-width:130px;text-align:right;line-height:1.5}.modal{padding:10px}.modal-img{height:300px}.details{padding:25px 20px}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="logo">CLUBHOUSE</div>
+  <a href="#crew">RENDI PUTEK ↓</a>
+</nav>
+
+<header class="hero">
+  <div class="glow"></div>
+  <div class="hero-inner">
+    <div class="eyebrow">CLUBHOUSE R RENDA BUR AMI</div>
+    <h1>CLUBHOUSE PEOPLE<br>EXPOSED.</h1>
+    <p>MAKSUDU HT CLUBHOUSE T HERO BONIBI.</p>
+    <a class="scroll" href="#crew">SCROLL KOR MAKSUDA↓</a>
+  </div>
+</header>
+
+<section class="section" id="crew">
+  <div class="section-head">
+    <div><h2>CLUBHOUSE</h2></div>
+    <p>Click a photo to know the person.</p>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<footer>CLUBHOUSE(RENDIPUTEK) © 2026 built by-dranzo.</footer>
+
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-box">
+    <button class="close" id="close" aria-label="Close">×</button>
+    <div class="modal-img"><img id="mImg" src="" alt=""></div>
+    <div class="details">
+      <div class="tag">ARCHIVE PROFILE</div>
+      <h3 id="mName"></h3>
+      <div class="role" id="mNick"></div>
+      <p id="mDesc"></p>
+      <h4>KNOWN ACTIVITIES</h4>
+      <div class="chips" id="mActivities"></div>
+      <h4>KNOWN FOR</h4>
+      <p id="mKnown"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================================
+   ADD YOUR FRIENDS HERE
+   Replace image paths with your photos.
+================================ */
+const friends = [
+  {
+    name:"FELCON",
+    nickname:"MULLA TYPE POKEMON",
+    image:"C:\\Users\\91600\\Desktop\\clubhouse\\felcon.jpeg",
+    description:"E MULLA HOI BRIVANSHU DAI YAR KOTI MARE.",
+    activities:["SUR","HATH MARE XODAI","SUALI PAGOL"],
+    knownFor:"SHAKAL TU BEYA SAGOLISUDA."
+  },
+  {
+    name:"PRASU",
+    nickname:"CHAPRI BIKER",
+    image:"C:\\Users\\91600\\Desktop\\clubhouse\\prasu.jpeg",
+    description:"SOUTH R VILLAIN TU KELA DEKHAT KOLIASUDA.",
+    activities:["😂 Roasting","GYM","🚶 BIKING"],
+    knownFor:"KANDULI MAS TUR NISINA KOTHA ILUTI XILUTI."
+  },
+  {
+    name:"MIRAJ",
+    nickname:"GADDAR TYPE POKEMON TELIYA KELA",
+    image:"C:\\Users\\91600\\Desktop\\clubhouse\\takiya.jpeg",
+    description:"GADDAR TEL MARI FURU SOBOKE CLUBHOUSE T.",
+    activities:["📸 AI USER","🎵 TELIA","☕ GADDAR"],
+    knownFor:"TELIA KLA DEKHAT BHAL NOHOI MOI."
+  },
+  {
+    name:"DAVID SUR",
+    nickname:"DAVID AND HIS SUR GROUP",
+    image:"C:\\Users\\91600\\Desktop\\clubhouse\\image.png",
+    description:"MOI DAVID SUR ARU EITU MUR GROUP CLUB T HERO BONU BELEGOR GARIR AGOT UTHI PHOTO MARU.",
+    activities:["HATH MARU","DHOPSUDA FOTAA LEBEL MARU","🏏 SUALI PAGOL"],
+    knownFor:"Finishing everyone else's food without asking."
+  },
+  {
+    name:"NOEVA",
+    nickname:"CHAPRI BADDIE 2/10 ACTS LIKE 10/10",
+    image:"C:\\Users\\91600\\Desktop\\clubhouse\\noeva.jpeg",
+    description:"CHAPRI OVERATTED BADDIE WITH NO BRAIN.",
+    activities:[" Travelling","MACHBHAT","LUSTY"],
+    knownFor:"LUSTY HOI MOI AND CHAPRI BADDIE NIJOKE DHUNIYA VABU BUT DEKHAT SUR JONI NISINA"
+  },
+  {
+    name:"DRANZOCO",
+    nickname:"SEHERA SA KELA YAR",
+    image:"C:\\Users\\91600\\Desktop\\clubhouse\\WhatsApp Image 2026-09-10 at 5.39.46 PM.jpeg",
+    description:" SEHERA SUA POSE SUA KLA BHAL NOHOI DEKHAT",
+    activities:["GOONER","SUALI PAGOL","🔥LUSTY AF "],
+    knownFor:"DICK TU DANGOR MANUHUtu DEKHAT EMN BHAL NOHOI KINTU."
+  }
+];
+
+const grid=document.getElementById("grid");
+const modal=document.getElementById("modal");
+const close=document.getElementById("close");
+
+friends.forEach((f,i)=>{
+  const card=document.createElement("article");
+  card.className="card";
+  card.innerHTML=`
+    <div class="photo">
+      <img src="${f.image}" alt="${f.name}" loading="lazy">
+      <div class="view">VIEW PROFILE →</div>
+    </div>
+    <div class="info">
+      <div class="num">0${i+1}</div>
+      <div class="name">${f.name}</div>
+      <div class="nick">${f.nickname}</div>
+    </div>`;
+  card.addEventListener("click",()=>openProfile(f));
+  grid.appendChild(card);
+});
+
+function openProfile(f){
+  document.getElementById("mImg").src=f.image;
+  document.getElementById("mImg").alt=f.name;
+  document.getElementById("mName").textContent=f.name;
+  document.getElementById("mNick").textContent=f.nickname;
+  document.getElementById("mDesc").textContent=f.description;
+  document.getElementById("mKnown").textContent=f.knownFor;
+  document.getElementById("mActivities").innerHTML=f.activities.map(x=>`<span class="chip">${x}</span>`).join("");
+  modal.style.display="flex";
+  requestAnimationFrame(()=>modal.classList.add("open"));
+  document.body.style.overflow="hidden";
+}
+function closeModal(){
+  modal.classList.remove("open");
+  setTimeout(()=>modal.style.display="none",300);
+  document.body.style.overflow="";
+}
+close.addEventListener("click",closeModal);
+modal.addEventListener("click",e=>{if(e.target===modal)closeModal()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&modal.classList.contains("open"))closeModal()});
+</script>
+</body>
+</html>
